@@ -106,7 +106,7 @@ func Debug(message string) {
 		return
 	}
 
-	log.Print("[DEBUG] - "+message)
+	log.Print("[DEBUG] - " + message)
 }
 
 func Info(message string) {
@@ -118,7 +118,7 @@ func Info(message string) {
 		return
 	}
 
-	log.Printf("[INFO] - "+message)
+	log.Printf("[INFO] - " + message)
 }
 
 func Warn(message string) {
@@ -130,7 +130,7 @@ func Warn(message string) {
 		return
 	}
 
-	log.Printf("[WARN] - "+message)
+	log.Printf("[WARN] - " + message)
 }
 
 func Error(message string) {
@@ -142,5 +142,5 @@ func Error(message string) {
 		return
 	}
 
-	log.Printf("[ERROR] - "+message)
+	log.Printf("[ERROR] - " + message)
 }

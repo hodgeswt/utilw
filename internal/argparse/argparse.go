@@ -28,7 +28,7 @@ func Parse(args []string, arguments []Argument, ignoreFirst bool) (map[string]Ar
 
 	first := true
 
-    logw.Debug("starting iterator")
+	logw.Debug("starting iterator")
 	for {
 		logw.Debug("iteration")
 
@@ -44,7 +44,7 @@ func Parse(args []string, arguments []Argument, ignoreFirst bool) (map[string]Ar
 
 		if ignoreFirst && first {
 			logw.Debug("ignoring first")
-            first = false
+			first = false
 			continue
 		}
 
@@ -55,7 +55,7 @@ func Parse(args []string, arguments []Argument, ignoreFirst bool) (map[string]Ar
 				continue
 			}
 
-            logw.Debugf("trying cli arg %s for argument %v", arg, argument)
+			logw.Debugf("trying cli arg %s for argument %v", arg, argument)
 
 			allParsed = false
 
@@ -76,8 +76,8 @@ func Parse(args []string, arguments []Argument, ignoreFirst bool) (map[string]Ar
 			}
 
 			if err != NoMatch && err != nil {
-                logw.Debugf("unexpected error in utilw.argparse.Parse %v", err)
-                return nil, err
+				logw.Debugf("unexpected error in utilw.argparse.Parse %v", err)
+				return nil, err
 			}
 		}
 
@@ -86,47 +86,46 @@ func Parse(args []string, arguments []Argument, ignoreFirst bool) (map[string]Ar
 		}
 	}
 
-    if iter.HasNext() {
-        remaining, err := iter.TakeAll()
-        message := "unexpected cli arguments provided"
+	if iter.HasNext() {
+		remaining, err := iter.TakeAll()
+		message := "unexpected cli arguments provided"
 
-        if err != nil {
-            logw.Debugf(message)
-            return nil, &UnexpectedArguments{
-                Values: []string{},
-                Message: message,
-            }
-        }
+		if err != nil {
+			logw.Debugf(message)
+			return nil, &UnexpectedArguments{
+				Values:  []string{},
+				Message: message,
+			}
+		}
 
-        logw.Errorf(message+": %v", remaining)
-        return nil, &UnexpectedArguments{
-            Values: remaining,
-            Message: message,
-        }
-    }
+		logw.Errorf(message+": %v", remaining)
+		return nil, &UnexpectedArguments{
+			Values:  remaining,
+			Message: message,
+		}
+	}
 
 	allParsed := true
-    out := map[string]Argument{}
+	out := map[string]Argument{}
 	missing := []Argument{}
 
 	for _, argument := range arguments {
 		if !argument.Parsed() {
 			missing = append(missing, argument)
-            logw.Debugf("Argument not parsed: %v", argument)
-            allParsed = false
+			logw.Debugf("Argument not parsed: %v", argument)
+			allParsed = false
 		} else {
-            out[argument.Name()] = argument
-        }
+			out[argument.Name()] = argument
+		}
 	}
 
 	if !allParsed {
-        logw.Debugf("insuffcient cli arguments provided")
+		logw.Debugf("insuffcient cli arguments provided")
 		return nil, &InsufficientArguments{
 			arguments: missing,
 			message:   "insufficient cli arguments provided",
 		}
 	}
-
 
 	return out, nil
 }

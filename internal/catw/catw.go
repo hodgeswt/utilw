@@ -19,8 +19,8 @@ func (it *InvalidArguments) Error() string {
 }
 
 func GetArguments() []argparse.Argument {
-    x := new(FileArg)
-    return []argparse.Argument{x}
+	x := new(FileArg)
+	return []argparse.Argument{x}
 }
 
 func Run(args []string) error {
@@ -38,7 +38,7 @@ func Run(args []string) error {
 	invalid := []argparse.Argument{}
 	for _, argument := range parsed {
 		if !argument.Valid() {
-            logw.Debugf("%v", argument)
+			logw.Debugf("%v", argument)
 			invalid = append(invalid, argument)
 			allValid = false
 		}
@@ -57,21 +57,21 @@ func Run(args []string) error {
 func run(args map[string]argparse.Argument) error {
 	f, err := os.Open(args[FILEARG].Value()[0])
 
-    if err != nil {
-        return err
-    }
+	if err != nil {
+		return err
+	}
 
-    defer f.Close()
+	defer f.Close()
 
-    s := bufio.NewScanner(f)
+	s := bufio.NewScanner(f)
 
-    for s.Scan() {
-        fmt.Println(s.Text())
-    }
+	for s.Scan() {
+		fmt.Println(s.Text())
+	}
 
-    if err := s.Err(); err != nil {
-        return err
-    }
+	if err := s.Err(); err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }

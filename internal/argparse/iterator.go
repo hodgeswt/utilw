@@ -17,44 +17,43 @@ func NewIterator(values []string) *Iterator {
 	}
 }
 
-func (it *Iterator) HasNext() (bool) {
-    return it.index < len(it.values)
+func (it *Iterator) HasNext() bool {
+	return it.index < len(it.values)
 }
 
 func (it *Iterator) Next() (string, error) {
 	if !it.HasNext() {
 		return "", Done
-    }
+	}
 
-    v := it.values[it.index]
-    it.index++
+	v := it.values[it.index]
+	it.index++
 
-    return v, nil
+	return v, nil
 }
 
 func (it *Iterator) Take(count int) ([]string, error) {
-    if it.index >= len(it.values) {
-        return nil, Done
-    }
+	if it.index >= len(it.values) {
+		return nil, Done
+	}
 
-    r := make([]string, count)
+	r := make([]string, count)
 
-    for i := range count {
-        v, err := it.Next()
+	for i := range count {
+		v, err := it.Next()
 
-        if err == Done {
-            return nil, InsufficientItems
-        } else if err != nil {
-            return nil, err
-        }
+		if err == Done {
+			return nil, InsufficientItems
+		} else if err != nil {
+			return nil, err
+		}
 
-        r[i] = v
-    }
+		r[i] = v
+	}
 
-    return r, nil
+	return r, nil
 }
 
 func (it *Iterator) TakeAll() ([]string, error) {
-    return it.Take(len(it.values) - it.index - 1)
+	return it.Take(len(it.values) - it.index - 1)
 }
-

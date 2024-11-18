@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-    if err := catw.Run(os.Args); err != nil {
-        log.Fatalf("Error: %v", err)
-    }
+	if err := catw.Run(os.Args); err != nil {
+		log.Fatalf("Error: %v", err)
+	}
 }
