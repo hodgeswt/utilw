@@ -54,7 +54,7 @@ func Debugf(message string, v ...any) {
 		parse()
 	}
 
-	if level&DEBUG != 1 {
+	if level&1 != 1 {
 		return
 	}
 
@@ -66,7 +66,7 @@ func Infof(message string, v ...any) {
 		parse()
 	}
 
-	if level&INFO != 1 {
+	if (level>>1)&1 != 1 {
 		return
 	}
 
@@ -78,7 +78,7 @@ func Warnf(message string, v ...any) {
 		parse()
 	}
 
-	if level&INFO != 1 {
+	if (level>>2)&1 != 1 {
 		return
 	}
 
@@ -90,7 +90,7 @@ func Errorf(message string, v ...any) {
 		parse()
 	}
 
-	if level&INFO != 1 {
+	if (level>>3)&1 != 1 {
 		return
 	}
 
@@ -102,7 +102,7 @@ func Debug(message string) {
 		parse()
 	}
 
-	if level&DEBUG != 1 {
+	if level&1 != 1 {
 		return
 	}
 
@@ -114,7 +114,7 @@ func Info(message string) {
 		parse()
 	}
 
-	if level&INFO != 1 {
+	if (level>>1)&1 == 1 {
 		return
 	}
 
@@ -126,7 +126,7 @@ func Warn(message string) {
 		parse()
 	}
 
-	if level&INFO != 1 {
+	if (level>>2)&1 != 1 {
 		return
 	}
 
@@ -138,7 +138,7 @@ func Error(message string) {
 		parse()
 	}
 
-	if level&INFO != 1 {
+	if (level>>3)&1 != 1 {
 		return
 	}
 
