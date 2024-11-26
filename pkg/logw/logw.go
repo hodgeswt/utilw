@@ -114,7 +114,7 @@ func Info(message string) {
 		parse()
 	}
 
-	if (level>>1)&1 == 1 {
+	if (level>>1)&1 != 1 {
 		return
 	}
 
