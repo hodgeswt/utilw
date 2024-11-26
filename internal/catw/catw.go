@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/hodgeswt/utilw/internal/argparse"
-	"github.com/hodgeswt/utilw/internal/logw"
+	"github.com/hodgeswt/utilw/pkg/logw"
 )
 
 type InvalidArguments struct {

@@ -1,6 +1,6 @@
 package argparse
 
-import "github.com/hodgeswt/utilw/internal/logw"
+import "github.com/hodgeswt/utilw/pkg/logw"
 
 type InsufficientArguments struct {
 	arguments []Argument
