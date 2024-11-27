@@ -14,44 +14,65 @@ const (
 )
 
 var level uint = ERROR
-var parsed = false
+var determined = false
 
 var loglevelw = "LOGLEVELW"
 
-func parse() {
-	if parsed {
+func parseLogLevel(logLevel string) uint {
+    var out uint
+	switch strings.ToLower(logLevel) {
+	case "all":
+		out = DEBUG | INFO | WARN | ERROR
+		break
+	case "debug":
+		out = DEBUG | INFO | WARN | ERROR
+		break
+	case "info":
+        out = INFO | WARN | ERROR
+		break
+	case "warn":
+		out = WARN | ERROR
+		break
+	case "error":
+	default:
+		out = ERROR
+	}
+    return out
+}
+
+func determineLevel() {
+	if determined {
 		return
 	}
-	parsed = true
+	determined = true
 
 	v, ok := os.LookupEnv(loglevelw)
 
 	if !ok {
 		level = ERROR
+        return
 	}
 
-	switch strings.ToLower(v) {
-	case "all":
-		level = DEBUG | INFO | WARN | ERROR
-		break
-	case "debug":
-		level = DEBUG | INFO | WARN | ERROR
-		break
-	case "info":
-		level = INFO | WARN | ERROR
-		break
-	case "warn":
-		level = WARN | ERROR
-		break
-	case "error":
-	default:
-		level = ERROR
-	}
+    level = parseLogLevel(v)
+}
+
+func SetLogLevel(logLevel string) {
+    level = parseLogLevel(logLevel)
+}
+
+func SetOutFile(path string) (*os.File, error) {
+    logFile, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+    if err != nil {
+        return nil, err
+    }
+
+    log.SetOutput(logFile)
+    return logFile, nil
 }
 
 func Debugf(message string, v ...any) {
-	if !parsed {
-		parse()
+	if !determined {
+		determineLevel()
 	}
 
 	if level&1 != 1 {
@@ -62,8 +83,8 @@ func Debugf(message string, v ...any) {
 }
 
 func Infof(message string, v ...any) {
-	if !parsed {
-		parse()
+	if !determined {
+		determineLevel()
 	}
 
 	if (level>>1)&1 != 1 {
@@ -74,8 +95,8 @@ func Infof(message string, v ...any) {
 }
 
 func Warnf(message string, v ...any) {
-	if !parsed {
-		parse()
+	if !determined {
+		determineLevel()
 	}
 
 	if (level>>2)&1 != 1 {
@@ -86,8 +107,8 @@ func Warnf(message string, v ...any) {
 }
 
 func Errorf(message string, v ...any) {
-	if !parsed {
-		parse()
+	if !determined {
+		determineLevel()
 	}
 
 	if (level>>3)&1 != 1 {
@@ -98,8 +119,8 @@ func Errorf(message string, v ...any) {
 }
 
 func Debug(message string) {
-	if !parsed {
-		parse()
+	if !determined {
+		determineLevel()
 	}
 
 	if level&1 != 1 {
@@ -110,8 +131,8 @@ func Debug(message string) {
 }
 
 func Info(message string) {
-	if !parsed {
-		parse()
+	if !determined {
+		determineLevel()
 	}
 
 	if (level>>1)&1 != 1 {
@@ -122,8 +143,8 @@ func Info(message string) {
 }
 
 func Warn(message string) {
-	if !parsed {
-		parse()
+	if !determined {
+		determineLevel()
 	}
 
 	if (level>>2)&1 != 1 {
@@ -134,8 +155,8 @@ func Warn(message string) {
 }
 
 func Error(message string) {
-	if !parsed {
-		parse()
+	if !determined {
+		determineLevel()
 	}
 
 	if (level>>3)&1 != 1 {
