@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/hodgeswt/utilw/internal/argparse"
+	"github.com/hodgeswt/utilw/pkg/argparse"
 )
 
 var FILEARG = "filename"

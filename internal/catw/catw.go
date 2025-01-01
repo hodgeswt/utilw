@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hodgeswt/utilw/internal/argparse"
+	"github.com/hodgeswt/utilw/pkg/argparse"
 	"github.com/hodgeswt/utilw/pkg/logw"
 )
 
