@@ -2,6 +2,21 @@ package argparse
 
 import "github.com/hodgeswt/utilw/pkg/logw"
 
+type ArgumentParser struct {
+	logger *logw.Logger
+}
+
+func NewArgumentParser(logger *logw.Logger) *ArgumentParser {
+	var parser = new(ArgumentParser)
+	parser.logger = logger
+
+	if logger != nil {
+		logger.LoadConfig(nil)
+	}
+
+	return parser
+}
+
 type InsufficientArguments struct {
 	arguments []Argument
 	message   string
@@ -20,30 +35,30 @@ func (it *InsufficientParameters) Error() string {
 	return it.message
 }
 
-func Parse(args []string, arguments []Argument, ignoreFirst bool) (map[string]Argument, error) {
-	logw.Debugf("+argparse.Parse, args: %v, arguments: %v, ignoreFirst: %v", args, arguments, ignoreFirst)
-	defer logw.Debug("-argparse.Parse")
+func (it *ArgumentParser) Parse(args []string, arguments []Argument, ignoreFirst bool) (map[string]Argument, error) {
+	it.logger.Debugf("+argparse.Parse, args: %v, arguments: %v, ignoreFirst: %v", args, arguments, ignoreFirst)
+	defer it.logger.Debug("-argparse.Parse")
 
 	iter := NewIterator(args)
 
 	first := true
 
-	logw.Debug("starting iterator")
+	it.logger.Debug("starting iterator")
 	for {
-		logw.Debug("iteration")
+		it.logger.Debug("iteration")
 
 		arg, err := iter.Next()
 
 		if err == Done {
-			logw.Debug("iterator done")
+			it.logger.Debug("iterator done")
 			break
 		} else if err != nil {
-			logw.Errorf("iterator error: %v", err)
+			it.logger.Errorf("iterator error: %v", err)
 			return nil, err
 		}
 
 		if ignoreFirst && first {
-			logw.Debug("ignoring first")
+			it.logger.Debug("ignoring first")
 			first = false
 			continue
 		}
@@ -55,7 +70,7 @@ func Parse(args []string, arguments []Argument, ignoreFirst bool) (map[string]Ar
 				continue
 			}
 
-			logw.Debugf("trying cli arg %s for argument %v", arg, argument)
+			it.logger.Debugf("trying cli arg %s for argument %v", arg, argument)
 
 			allParsed = false
 
@@ -76,7 +91,7 @@ func Parse(args []string, arguments []Argument, ignoreFirst bool) (map[string]Ar
 			}
 
 			if err != NoMatch && err != nil {
-				logw.Debugf("unexpected error in utilw.argparse.Parse %v", err)
+				it.logger.Debugf("unexpected error in utilw.argparse.Parse %v", err)
 				return nil, err
 			}
 		}
@@ -91,14 +106,14 @@ func Parse(args []string, arguments []Argument, ignoreFirst bool) (map[string]Ar
 		message := "unexpected cli arguments provided"
 
 		if err != nil {
-			logw.Debugf(message)
+			it.logger.Debugf(message)
 			return nil, &UnexpectedArguments{
 				Values:  []string{},
 				Message: message,
 			}
 		}
 
-		logw.Errorf(message+": %v", remaining)
+		it.logger.Errorf(message+": %v", remaining)
 		return nil, &UnexpectedArguments{
 			Values:  remaining,
 			Message: message,
@@ -112,7 +127,7 @@ func Parse(args []string, arguments []Argument, ignoreFirst bool) (map[string]Ar
 	for _, argument := range arguments {
 		if !argument.Parsed() {
 			missing = append(missing, argument)
-			logw.Debugf("Argument not parsed: %v", argument)
+			it.logger.Debugf("Argument not parsed: %v", argument)
 			allParsed = false
 		} else {
 			out[argument.Name()] = argument
@@ -120,7 +135,7 @@ func Parse(args []string, arguments []Argument, ignoreFirst bool) (map[string]Ar
 	}
 
 	if !allParsed {
-		logw.Debugf("insuffcient cli arguments provided")
+		it.logger.Debugf("insuffcient cli arguments provided")
 		return nil, &InsufficientArguments{
 			arguments: missing,
 			message:   "insufficient cli arguments provided",

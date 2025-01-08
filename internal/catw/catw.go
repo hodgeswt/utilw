@@ -23,12 +23,18 @@ func GetArguments() []argparse.Argument {
 	return []argparse.Argument{x}
 }
 
+var l *logw.Logger
+
 func Run(args []string) error {
-	logw.Debugf("+catw.Run, args: %v", args)
-	defer logw.Debugf("-catw.Run")
+	l, _ := logw.NewLogger("catw", nil)
+
+	l.Debugf("+catw.Run, args: %v", args)
+	defer l.Debugf("-catw.Run")
 
 	arguments := GetArguments()
-	parsed, err := argparse.Parse(args, arguments, true)
+
+	parser := argparse.NewArgumentParser(l)
+	parsed, err := parser.Parse(args, arguments, true)
 
 	if err != nil {
 		return err
@@ -38,7 +44,7 @@ func Run(args []string) error {
 	invalid := []argparse.Argument{}
 	for _, argument := range parsed {
 		if !argument.Valid() {
-			logw.Debugf("%v", argument)
+			l.Debugf("%v", argument)
 			invalid = append(invalid, argument)
 			allValid = false
 		}
